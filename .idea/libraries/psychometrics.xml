@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="psychometrics">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../contiki/tools/cooja/lib/psychometrics.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
