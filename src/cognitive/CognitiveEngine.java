@@ -19,7 +19,7 @@ public class CognitiveEngine {
     private List<DetectionStageInterface> stageList;
 
     public void setupEngine(EngineConfiguration configuration){
-        stageList.add(new LearningStage());
+        stageList.add(new LearningStage(null));
         stageList.add(new MonitoringStage());
     }
 
