@@ -19,7 +19,7 @@ public class CognitiveEngine {
     private List<DetectionStageInterface> stageList;
 
     public void setupEngine(EngineConfiguration configuration){
-        stageList.add(new LearningStage(null));
+        stageList.add(new LearningStage());
         stageList.add(new MonitoringStage());
     }
 
@@ -33,11 +33,7 @@ public class CognitiveEngine {
     }
 
     public void ingestDataItem(SimData data){
-        List<SimData> simData= new ArrayList<>();
-        if (nodeData.containsKey(data.getNodeId())){
-            simData = nodeData.get(data.getNodeId());
-        }
-        simData.add(data);
+
         analyzeDataPoint(data);
     }
 

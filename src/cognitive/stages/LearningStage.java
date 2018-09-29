@@ -1,6 +1,9 @@
 package cognitive.stages;
 
 import cognitive.HistogramClassificationStrategy;
+import com.itemanalysis.psychometrics.histogram.BinCalculationType;
+import com.itemanalysis.psychometrics.histogram.Histogram;
+import com.itemanalysis.psychometrics.histogram.HistogramType;
 import gatewayhub.GatewayHubDataModel;
 import gatewayhub.GatewayState;
 import sensors.SimData;
@@ -17,70 +20,35 @@ public class LearningStage implements DetectionStageInterface {
     private GatewayHubDataModel dataModel;
     private HistogramClassificationStrategy histogramClassificationStrategy = new HistogramClassificationStrategy();
     private String startTime;
-    private Date dt_startTime;
-    private int repeatCycle = 10*60; // 10 Minutes
+    private Date dt_windowsEnd;
+    private int repeatCycle = 1*60; // 1 Minutes
+    private Histogram histogram =new Histogram(HistogramType.DENSITY, BinCalculationType.FREEDMAN_DIACONIS,false);
 
+    public LearningStage() {
 
-    public LearningStage(GatewayHubDataModel dataModel) {
-        this.dataModel = dataModel;
-        // Init State
-        dataModel.setStateDataItem(GatewayState.LEARNING, "rawLearnDataSet", new LinkedList());
     }
 
     @Override
     public void captureData(SimData datapoint) {
 
-        if (isLearningCycleCompleted()) {
-            LinkedList list = (LinkedList) dataModel.getStateDataItem(GatewayState.LEARNING, "rawLearnDataSet");
 
-            if (list.isEmpty()) {
-                startTime = datapoint.getTime();
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd.hh:mm:ss");
                 try {
-                    dt_startTime = dateFormat.parse(startTime);
+                    dt_windowsEnd = (dt_windowsEnd == null)? new Date(dateFormat.parse(datapoint.getTime()).getTime()+(repeatCycle*1000)) : dt_windowsEnd;
+                    if (dt_windowsEnd.before(dateFormat.parse(datapoint.getTime()))){
+                            // Query the data set from InfluxDB specifying the timestamp
+                            // Read Stabilization data.
+                            // Read Variance.
+                            // Calculate chi square
+                            // Throw exception
+                            dt_windowsEnd = null;
+                    }
+
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-
-            }else{
-                // Create histogram
-
-
-            }
-
-            list.add(datapoint);
-
-            // Check if
-
-        /* String path = dataPath+"learning/"+String.valueOf(datapoint.getSimId())+"/"+datapoint.getType()+"/"+"data.csv";
-        File f =new File(path);
-        if (!f.exists()){
-            if(!f.getParentFile().exists()){
-                f.getParentFile().mkdirs();
-            }
-            f.createNewFile();
-            FileWriter writer = new FileWriter(f);
-            writer.write("simId,attribute,value\r\n");
-            writer.flush();
-            writer.close();
-        }
-        try {
-            histogramClassificationStrategy.classifyData(datapoint);
-        } catch (AnomalyException e) {
-            e.printStackTrace();
-        }
-        try {
-            Files.write(f.toPath(),(datapoint.getSimId()+","+datapoint.getType()+","+datapoint.getDataPoint()+"\r\n").getBytes(), StandardOpenOption.APPEND);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        */
-        }
     }
 
-    public boolean isLearningCycleCompleted() {
-        return false;
-    }
 }
 
 

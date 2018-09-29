@@ -1,10 +1,12 @@
 package cognitive.models;
 
+import cognitive.provider.AbstractDataModel;
 import org.jfree.data.statistics.SimpleHistogramBin;
+import sensors.SimData;
 
 import java.util.ArrayList;
 
-public class HistogramModel {
+public class HistogramModel extends AbstractDataModel<SimData> {
     private String type;
     private ArrayList<SimpleHistogramBin> bins;
 
